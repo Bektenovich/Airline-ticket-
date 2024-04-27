@@ -1,133 +1,83 @@
-// Online C++ compiler to run C++ program online
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <sstream>
-#include <algorithm>
+#include <string>
+#include <unordered_map>
+#include <queue>
 
 using namespace std;
 
-// Define a structure to represent a flight ticket
-struct FlightTicket {
-    string ticketNumber;
-    string passengerName;
-    string departureDate;
-    string departureTime;
-    string destination;
-    double price;
+struct Node {
+    char data;
+    int freq;
+    Node* left;
+    Node* right;
+
+    Node(char data, int freq) : data(data), freq(freq), left(nullptr), right(nullptr) {}
 };
 
-// Function to display a flight ticket
-void displayTicket(const FlightTicket& ticket) {
-    cout << "Ticket Number: " << ticket.ticketNumber << endl;
-    cout << "Passenger Name: " << ticket.passengerName << endl;
-    cout << "Departure Date: " << ticket.departureDate << endl;
-    cout << "Departure Time: " << ticket.departureTime << endl;
-    cout << "Destination: " << ticket.destination << endl;
-    cout << "Price: $" << ticket.price << endl;
-    cout << "-----------------------------" << endl;
+struct Compare {
+    bool operator()(Node* left, Node* right) {
+        return left->freq > right->freq;
+    }
+};
+
+Node* buildHuffmanTree(const string& text) {
+    unordered_map<char, int> freqMap;
+    for (char c : text) {
+        freqMap[c]++;
+    }
+
+    priority_queue<Node*, vector<Node*>, Compare> pq;
+    for (const auto& pair : freqMap) {
+        pq.push(new Node(pair.first, pair.second));
+    }
+
+    while (pq.size() > 1) {
+        Node* left = pq.top();
+        pq.pop();
+        Node* right = pq.top();
+        pq.pop();
+
+        Node* parent = new Node('$', left->freq + right->freq);
+        parent->left = left;
+        parent->right = right;
+        pq.push(parent);
+    }
+
+    return pq.top();
 }
 
-// Function to save flight tickets to a file
-void saveTicketsToFile(const vector<FlightTicket>& tickets, const string& filename) {
-    ofstream file(filename);
-    if (file.is_open()) {
-        for (const auto& ticket : tickets) {
-            file << ticket.ticketNumber << "," << ticket.passengerName << "," << ticket.departureDate
-                 << "," << ticket.departureTime << "," << ticket.destination << "," << ticket.price << endl;
-        }
-        file.close();
-    } else {
-        cerr << "Error: Unable to open file for writing!" << endl;
+void encode(Node* root, string str, unordered_map<char, string>& huffmanCode) {
+    if (root == nullptr) {
+        return;
     }
+
+    if (!root->left && !root->right) {
+        huffmanCode[root->data] = str;
+    }
+
+    encode(root->left, str + "0", huffmanCode);
+    encode(root->right, str + "1", huffmanCode);
 }
 
-// Function to load flight tickets from a file
-vector<FlightTicket> loadTicketsFromFile(const string& filename) {
-    vector<FlightTicket> tickets;
-    ifstream file(filename);
-    if (file.is_open()) {
-        string line;
-        while (getline(file, line)) {
-            istringstream iss(line);
-            FlightTicket ticket;
-            getline(iss, ticket.ticketNumber, ',');
-            getline(iss, ticket.passengerName, ',');
-            getline(iss, ticket.departureDate, ',');
-            getline(iss, ticket.departureTime, ',');
-            getline(iss, ticket.destination, ',');
-            iss >> ticket.price;
-            tickets.push_back(ticket);
-        }
-        file.close();
-    } else {
-        cerr << "Error: Unable to open file for reading!" << endl;
+string huffmanEncode(const string& text) {
+    Node* root = buildHuffmanTree(text);
+
+    unordered_map<char, string> huffmanCode;
+    encode(root, "", huffmanCode);
+
+    string encodedText = "";
+    for (char c : text) {
+        encodedText += huffmanCode[c];
     }
-    return tickets;
+
+    return encodedText;
 }
 
 int main() {
-    vector<FlightTicket> tickets = loadTicketsFromFile("tickets.txt");
-
-    // Display menu
-    int choice;
-    do {
-        cout << "Airline Ticket Reservation System" << endl;
-        cout << "1. Book a ticket" << endl;
-        cout << "2. View all tickets" << endl;
-        cout << "3. Cancel a ticket" << endl;
-        cout << "4. Exit" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-        switch (choice) {
-            case 1: {
-                FlightTicket newTicket;
-                cout << "Enter Ticket Number: ";
-                cin >> newTicket.ticketNumber;
-                cout << "Enter Passenger Name: ";
-                cin >> newTicket.passengerName;
-                cout << "Enter Departure Date: ";
-                cin >> newTicket.departureDate;
-                cout << "Enter Departure Time: ";
-                cin >> newTicket.departureTime;
-                cout << "Enter Destination: ";
-                cin >> newTicket.destination;
-                cout << "Enter Price: $";
-                cin >> newTicket.price;
-                tickets.push_back(newTicket);
-                saveTicketsToFile(tickets, "tickets.txt");
-                break;
-            }
-            case 2: {
-                cout << "All booked tickets:" << endl;
-                for (const auto& ticket : tickets) {
-                    displayTicket(ticket);
-                }
-                break;
-            }
-            case 3: {
-                string ticketNumber;
-                cout << "Enter Ticket Number to cancel: ";
-                cin >> ticketNumber;
-                auto it = find_if(tickets.begin(), tickets.end(), [&](const FlightTicket& t) {
-                    return t.ticketNumber == ticketNumber;
-                });
-                if (it != tickets.end()) {
-                    tickets.erase(it);
-                    cout << "Ticket cancelled successfully." << endl;
-                    saveTicketsToFile(tickets, "tickets.txt");
-                } else {
-                    cout << "Ticket not found." << endl;
-                }
-                break;
-            }
-            case 4:
-                cout << "Exiting program..." << endl;
-                break;
-            default:
-                cout << "Invalid choice. Please try again." << endl;
-        }
-    } while (choice != 4);
+    string text = "Jenishbek Agay";
+    string encodedText = huffmanEncode(text);
+    cout << "Original text: " << text << endl;
+    cout << "Encoded text: " << encodedText << endl;
 
     return 0;
 }
