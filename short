@@ -1,0 +1,94 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// Structure to represent a flight ticket
+struct Ticket {
+    string id;
+    string source;
+    string destination;
+    string date;
+    string time;
+    int seatsAvailable;
+    double price;
+};
+
+// Global vector to store tickets
+vector<Ticket> tickets;
+
+// Function prototypes
+void displayAllTickets();
+void addTicket();
+
+int main() {
+    while (true) {
+        cout << "\nAirline Ticket Reservation System\n";
+        cout << "1. Display all tickets\n";
+        cout << "2. Add a new ticket\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                displayAllTickets();
+                break;
+            case 2:
+                addTicket();
+                break;
+            case 3:
+                cout << "Exiting program.\n";
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+
+    return 0;
+}
+
+// Function to display all tickets
+void displayAllTickets() {
+    if (tickets.empty()) {
+        cout << "No tickets found. Please add some tickets first.\n";
+        return;
+    }
+
+    cout << "ID\tSource\tDestination\tDate\t\tTime\tSeats\tPrice\n";
+    for (const auto& ticket : tickets) {
+        cout << ticket.id << "\t"
+             << ticket.source << "\t"
+             << ticket.destination << "\t"
+             << ticket.date << "\t"
+             << ticket.time << "\t"
+             << ticket.seatsAvailable << "\t"
+             << ticket.price << "\n";
+    }
+}
+
+// Function to add a new ticket
+void addTicket() {
+    Ticket newTicket;
+    cout << "Enter ticket details:\n";
+    cout << "ID: ";
+    cin >> newTicket.id;
+    cout << "Source: ";
+    cin >> newTicket.source;
+    cout << "Destination: ";
+    cin >> newTicket.destination;
+    cout << "Date: ";
+    cin >> newTicket.date;
+    cout << "Time: ";
+    cin >> newTicket.time;
+    cout << "Seats available: ";
+    cin >> newTicket.seatsAvailable;
+    cout << "Price: ";
+    cin >> newTicket.price;
+
+    tickets.push_back(newTicket);
+    cout << "Ticket added successfully.\n";
+}
