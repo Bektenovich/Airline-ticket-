@@ -9,3 +9,4 @@ Objectives:
 To create a user-friendly interface for managing flight tickets.
 To allow users to easily add,view,and save flight tickets.
 To provide a reliable system for airlines to manage their ticketing operations.
+PRESENTATION  https://www.canva.com/design/DAGFF9O4GpE/9EnNPu1IcZIeHXHjEgImwg/edit?utm_content=DAGFF9O4GpE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
