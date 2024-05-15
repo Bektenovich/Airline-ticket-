@@ -124,6 +124,18 @@ void cancelTicket() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 #include <iostream>
 #include <fstream>
@@ -302,9 +314,10 @@ void loadTicketsFromFile() {
 
     file.close();
 }
-```
+
 
     if (!found) { // Если билет не был найден
         cout << "Ticket with ID " << ticketId << " not found.\n"; // Выводим сообщение о том, что билет не найден
     }
 }
+```
