@@ -1,4 +1,3 @@
-// Online C++ compiler to run C++ program online
 #include <iostream> // библиотека для ввода и вывода
 #include <string> // библиотека для работы со строками
 #include <vector> // библиотека для работы с векторами
@@ -136,7 +135,10 @@ void cancelTicket() {
 
 
 
-```
+
+
+
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -320,4 +322,3 @@ void loadTicketsFromFile() {
         cout << "Ticket with ID " << ticketId << " not found.\n"; // Выводим сообщение о том, что билет не найден
     }
 }
-```
