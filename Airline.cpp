@@ -1,72 +1,84 @@
-// Online C++ compiler to run C++ program online
-#include <iostream> // библиотека для ввода и вывода
-#include <string> // библиотека для работы со строками
-#include <vector> // библиотека для работы с векторами
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 
-using namespace std; // используем пространство имен std
+using namespace std;
 
 // Структура для представления билета на рейс
 struct Ticket {
-    string id; // идентификатор билета
-    string source; // пункт отправления
-    string destination; // пункт назначения
-    string date; // дата
-    string time; // время
-    int seatsAvailable; // доступные места
-    double price; // цена
+    string id;
+    string source;
+    string destination;
+    string date;
+    string time;
+    int seatsAvailable;
+    double price;
 };
 
 // Глобальный вектор для хранения билетов
 vector<Ticket> tickets;
 
 // Прототипы функций
-void displayAllTickets(); // функция для отображения всех билетов
-void addTicket(); // функция для добавления нового билета
-void cancelTicket(); // функция для отмены билета
+void displayAllTickets();
+void addTicket();
+void cancelTicket();
+void saveTicketsToFile();
+void loadTicketsFromFile();
 
 int main() {
-    while (true) {
-        cout << "\nAirline Ticket Reservation System\n"; // Выводим заголовок программы
-        cout << "1. Display all tickets\n"; // Опция для отображения всех билетов
-        cout << "2. Add a new ticket\n"; // Опция для добавления нового билета
-        cout << "3. Cancel a ticket\n"; // Опция для отмены билета
-        cout << "4. Exit\n"; // Опция для выхода из программы
-        cout << "Enter your choice: "; // Ввод выбора пользователя
+    loadTicketsFromFile(); // Загружаем билеты из файла при запуске
 
-        int choice; // Переменная для хранения выбора
-        cin >> choice; // Считываем выбор пользователя
+    // Добавляем тестовые данные
+    Ticket testTicket1 = {"1", "Bishkek", "London     ", "16/05/2024", "08:00", 10,  500.0};
+    tickets.push_back(testTicket1);
+
+    Ticket testTicket2 = {"2", "London", "Paris    ", "17/05/2024", "09:00", 21,  350.0};
+    tickets.push_back(testTicket2);
+
+    Ticket testTicket3 = {"3", "Paris", "Bishkek   ", "18/05/2024", "10:00", 7,  400.0};
+    tickets.push_back(testTicket3);
+
+    while (true) {
+        cout << "\nAirline Ticket Reservation System\n";
+        cout << "1. Display all tickets\n";
+        cout << "2. Add a new ticket\n";
+        cout << "3. Cancel a ticket\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+
+        int choice;
+        cin >> choice;
 
         switch (choice) {
             case 1:
-                displayAllTickets(); // Вызываем функцию отображения всех билетов
+                displayAllTickets();
                 break;
             case 2:
-                addTicket(); // Вызываем функцию добавления нового билета
+                addTicket();
                 break;
             case 3:
-                cancelTicket(); // Вызываем функцию отмены билета
+                cancelTicket();
                 break;
             case 4:
-                cout << "Exiting program.\n"; // Выводим сообщение о выходе из программы
-                return 0; // Возвращаем 0, чтобы завершить программу
+                saveTicketsToFile();
+                cout << "Exiting program.\n";
+                return 0;
             default:
-                cout << "Invalid choice. Please try again.\n"; // Выводим сообщение об ошибке при некорректном выборе
+                cout << "Invalid choice. Please try again.\n";
         }
     }
 
-    return 0; // Возвращаем 0, чтобы завершить программу
+    return 0;
 }
 
-// Функция для отображения всех билетов
 void displayAllTickets() {
-    if (tickets.empty()) { // Проверяем, пуст ли вектор билетов
-        cout << "No tickets found. Please add some tickets first.\n"; // Выводим сообщение о том, что билетов нет
-        return; // Возвращаемся обратно в главный цикл
+    if (tickets.empty()) {
+        cout << "No tickets found. Please add some tickets first.\n";
+        return;
     }
 
-    cout << "ID\tSource\tDestination\tDate\t\tTime\tSeats\tPrice\n"; // Выводим заголовок таблицы
-
-    // Перебираем все билеты и выводим их информацию
+    cout << "ID\tSource\tDestination\tDate\t\tTime\tSeats\tPrice\n";
     for (const auto& ticket : tickets) {
         cout << ticket.id << "\t"
              << ticket.source << "\t"
@@ -78,51 +90,98 @@ void displayAllTickets() {
     }
 }
 
-// Функция для добавления нового билета
 void addTicket() {
-    Ticket newTicket; // Создаем новый объект билета
-    cout << "Enter ticket details:\n"; // Выводим приглашение к вводу данных
+    Ticket newTicket;
+    cout << "Enter ticket details:\n";
     cout << "ID: ";
-    cin >> newTicket.id; // Считываем идентификатор
+    cin >> newTicket.id;
     cout << "Source: ";
-    cin >> newTicket.source; // Считываем пункт отправления
+    cin >> newTicket.source;
     cout << "Destination: ";
-    cin >> newTicket.destination; // Считываем пункт назначения
+    cin >> newTicket.destination;
     cout << "Date: ";
-    cin >> newTicket.date; // Считываем дату
+    cin >> newTicket.date;
     cout << "Time: ";
-    cin >> newTicket.time; // Считываем время
+    cin >> newTicket.time;
     cout << "Seats available: ";
-    cin >> newTicket.seatsAvailable; // Считываем количество доступных мест
+    cin >> newTicket.seatsAvailable;
     cout << "Price: ";
-    cin >> newTicket.price; // Считываем цену
+    cin >> newTicket.price;
 
-    tickets.push_back(newTicket); // Добавляем новый билет в вектор
-    cout << "Ticket added successfully.\n"; // Выводим сообщение об успешном добавлении
+    tickets.push_back(newTicket);
+    cout << "Ticket added successfully.\n";
 }
 
-// Функция для отмены билета
 void cancelTicket() {
-    if (tickets.empty()) { // Проверяем, пуст ли вектор билетов
-        cout << "No tickets found to cancel.\n"; // Выводим сообщение о том, что билетов нет
-        return; // Возвращаемся обратно в главный цикл
+    if (tickets.empty()) {
+        cout << "No tickets found to cancel.\n";
+        return;
     }
 
-    string ticketId; // Переменная для хранения идентификатора билета
+    string ticketId;
     cout << "Enter the ID of the ticket to cancel: ";
-    cin >> ticketId; // Считываем идентификатор билета, который нужно отменить
+    cin >> ticketId;
 
-    bool found = false; // Флаг для указания на найден ли билет
-    for (auto it = tickets.begin(); it != tickets.end(); ++it) { // Перебираем все билеты
-        if (it->id == ticketId) { // Если нашли билет с нужным идентификатором
-            tickets.erase(it); // Удаляем билет из вектора
-            found = true; // Устанавливаем флаг найденного билета
-            cout << "Ticket with ID " << ticketId << " canceled successfully.\n"; // Выводим сообщение об успешной отмене
-            break; // Выходим из цикла
+    bool found = false;
+    for (auto it = tickets.begin(); it != tickets.end(); ++it) {
+        if (it->id == ticketId) {
+            tickets.erase(it);
+            found = true;
+            cout << "Ticket with ID " << ticketId << " canceled successfully.\n";
+            break;
         }
     }
 
-    if (!found) { // Если билет не был найден
-        cout << "Ticket with ID " << ticketId << " not found.\n"; // Выводим сообщение о том, что билет не найден
+    if (!found) {
+        cout << "Ticket with ID " << ticketId << " not found.\n";
     }
+}
+
+void saveTicketsToFile() {
+    ofstream file("tickets.txt");
+    if (!file.is_open()) {
+        cout << "Failed to open file for writing.\n";
+        return;
+    }
+
+    for (const auto& ticket : tickets) {
+        file << ticket.id << " "
+             << ticket.source << " "
+             << ticket.destination << " "
+             << ticket.date << " "
+             << ticket.time << " "
+             << ticket.seatsAvailable << " "
+             << ticket.price << "\n";
+    }
+
+    file.close();
+}
+
+void loadTicketsFromFile() {
+    ifstream file("tickets.txt");
+    if (!file.is_open()) {
+        cout << "No saved tickets found.\n";
+        return;
+    }
+
+    tickets.clear();
+
+    string id, source, destination, date, time;
+    int seatsAvailable;
+    double price;
+
+    while (file >> id >> source >> destination >> date >> time >> seatsAvailable >> price) {
+        Ticket ticket;
+        ticket.id = id;
+        ticket.source = source;
+        ticket.destination = destination;
+        ticket.date = date;
+        ticket.time = time;
+        ticket.seatsAvailable = seatsAvailable;
+        ticket.price = price;
+
+        tickets.push_back(ticket);
+    }
+
+    file.close();
 }
